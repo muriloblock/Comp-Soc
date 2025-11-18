@@ -1,0 +1,225 @@
+/* Responsividade para diferentes tamanhos de tela */
+
+/* Tablets e telas médias */
+@media (max-width: 1024px) {
+    .simulator-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .hero h2 {
+        font-size: 2.5rem;
+    }
+    
+    .result-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .education-cards {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+/* Celulares e telas pequenas */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    header .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
+    nav ul {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+    
+    nav a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .hero {
+        padding: 3rem 0;
+    }
+    
+    .hero h2 {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .hero p {
+        font-size: 1.1rem;
+    }
+    
+    .simulator-section h2,
+    .educational-section h2 {
+        font-size: 2rem;
+    }
+    
+    .simulator-section,
+    .educational-section {
+        padding: 2rem 0;
+        margin: 1rem 0;
+    }
+    
+    .simulator-form,
+    .results-container {
+        padding: 1.5rem;
+    }
+    
+    .result-cards {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .result-card {
+        padding: 1rem;
+    }
+    
+    .result-card h4 {
+        font-size: 0.8rem;
+    }
+    
+    .result-card p {
+        font-size: 1.1rem;
+    }
+    
+    .chart-container {
+        height: 300px;
+        padding: 0.75rem;
+    }
+    
+    .education-cards {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .education-card {
+        padding: 1.5rem;
+    }
+    
+    .education-card h3 {
+        font-size: 1.25rem;
+    }
+    
+    .btn-primary {
+        padding: 0.875rem 1.75rem;
+        font-size: 1rem;
+    }
+}
+
+/* Telas muito pequenas */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .hero h2 {
+        font-size: 1.75rem;
+    }
+    
+    .hero p {
+        font-size: 1rem;
+    }
+    
+    .simulator-section h2,
+    .educational-section h2 {
+        font-size: 1.75rem;
+    }
+    
+    .simulator-form,
+    .results-container,
+    .education-card {
+        padding: 1rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        padding: 0.75rem;
+        font-size: 0.95rem;
+    }
+    
+    .chart-container {
+        height: 250px;
+        padding: 0.5rem;
+    }
+    
+    .btn-primary {
+        width: 100%;
+        padding: 1rem;
+    }
+    
+    nav ul {
+        gap: 0.5rem;
+    }
+    
+    nav a {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Landscape em celulares */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        padding: 2rem 0;
+    }
+    
+    .hero h2 {
+        font-size: 1.5rem;
+    }
+    
+    .hero p {
+        font-size: 0.95rem;
+    }
+    
+    .simulator-section,
+    .educational-section {
+        padding: 1.5rem 0;
+    }
+}
+
+/* Melhorias para touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary {
+        min-height: 44px;
+    }
+    
+    nav a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .form-group input,
+    .form-group select {
+        min-height: 44px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --card-bg: #2d2d2d;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+    }
+}

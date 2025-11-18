@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Investimentos</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/simulator.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 Simulador de Investimentos</h1>
+            <nav>
+                <ul>
+                    <li><a href="#simulador">Simulador</a></li>
+                    <li><a href="pages/dashboard.html">Dashboard</a></li>
+                    <li><a href="pages/learn.html">Aprender</a></li>
+                    <li><a href="pages/portfolio.html">Portfólio</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="hero">
+            <div class="container">
+                <h2>Simule e aprenda sobre investimentos</h2>
+                <p>Descubra como seus investimentos podem crescer ao longo do tempo com nosso simulador interativo</p>
+            </div>
+        </section>
+
+        <section id="simulador" class="simulator-section">
+            <div class="container">
+                <h2>Simulador de Investimentos</h2>
+                
+                <div class="simulator-container">
+                    <div class="simulator-form">
+                        <div class="form-group">
+                            <label for="tipo-investimento">Tipo de Investimento:</label>
+                            <select id="tipo-investimento">
+                                <option value="poupanca">Poupança (0.5% a.m.)</option>
+                                <option value="cdb">CDB (1.0% a.m.)</option>
+                                <option value="lci">LCI/LCA (0.8% a.m.)</option>
+                                <option value="tesouro-selic">Tesouro Selic (0.9% a.m.)</option>
+                                <option value="tesouro-ipca">Tesouro IPCA+ (1.2% a.m.)</option>
+                                <option value="acoes">Ações (1.5% a.m.)</option>
+                                <option value="fiis">FIIs (1.3% a.m.)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="valor-inicial">Valor Inicial (R$):</label>
+                            <input type="number" id="valor-inicial" placeholder="10000" min="100" step="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aporte-mensal">Aporte Mensal (R$):</label>
+                            <input type="number" id="aporte-mensal" placeholder="500" min="0" step="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="periodo">Período (anos):</label>
+                            <input type="number" id="periodo" placeholder="5" min="1" max="30" step="1">
+                        </div>
+
+                        <button id="simular" class="btn-primary">Simular Investimento</button>
+                    </div>
+
+                    <div class="results-container">
+                        <div id="resultado-resumo" class="result-summary">
+                            <h3>Resultado da Simulação</h3>
+                            <div class="result-cards">
+                                <div class="result-card">
+                                    <h4>Valor Investido</h4>
+                                    <p id="total-investido">R$ 0,00</p>
+                                </div>
+                                <div class="result-card">
+                                    <h4>Valor Final</h4>
+                                    <p id="valor-final">R$ 0,00</p>
+                                </div>
+                                <div class="result-card">
+                                    <h4>Rendimento</h4>
+                                    <p id="rendimento">R$ 0,00</p>
+                                </div>
+                                <div class="result-card">
+                                    <h4>Rentabilidade</h4>
+                                    <p id="rentabilidade">0%</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-container">
+                            <canvas id="grafico-evolucao"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="educativo" class="educational-section">
+            <div class="container">
+                <h2>Aprenda sobre Investimentos</h2>
+                <div class="education-cards">
+                    <div class="education-card">
+                        <h3>🏦 Renda Fixa</h3>
+                        <p>Investimentos com rentabilidade previsível, ideais para perfil conservador.</p>
+                        <ul>
+                            <li>Poupança: Menor risco, menor retorno</li>
+                            <li>CDB: Maior rentabilidade que poupança</li>
+                            <li>Tesouro Direto: Títulos do governo</li>
+                        </ul>
+                    </div>
+                    <div class="education-card">
+                        <h3>📈 Renda Variável</h3>
+                        <p>Investimentos com maior potencial de retorno, mas também maior risco.</p>
+                        <ul>
+                            <li>Ações: Participação em empresas</li>
+                            <li>FIIs: Fundos Imobiliários</li>
+                            <li>ETFs: Fundos de índice</li>
+                        </ul>
+                    </div>
+                    <div class="education-card">
+                        <h3>🎯 Diversificação</h3>
+                        <p>Estratégia fundamental para reduzir riscos e otimizar retornos.</p>
+                        <ul>
+                            <li>Não coloque todos os ovos numa cesta</li>
+                            <li>Combine diferentes tipos de ativos</li>
+                            <li>Considere seu perfil de risco</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Simulador de Investimentos. Desenvolvido para fins educativos.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/charts.js"></script>
+</body>
+</html>

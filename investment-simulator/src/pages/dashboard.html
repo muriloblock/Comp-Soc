@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Simulador de Investimentos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/simulator.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 Simulador de Investimentos</h1>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Simulador</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="learn.html">Aprender</a></li>
+                    <li><a href="portfolio.html">Portfólio</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2>Dashboard de Investimentos</h2>
+                <p>Acompanhe e compare diferentes estratégias de investimento</p>
+            </div>
+        </section>
+
+        <section class="simulator-section">
+            <div class="container">
+                <h2>Comparativo de Investimentos</h2>
+                
+                <div class="comparison-controls">
+                    <div class="comparison-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="comp-valor">Valor Inicial (R$):</label>
+                                <input type="number" id="comp-valor" value="10000" min="1000" step="1000">
+                            </div>
+                            <div class="form-group">
+                                <label for="comp-aporte">Aporte Mensal (R$):</label>
+                                <input type="number" id="comp-aporte" value="500" min="0" step="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="comp-periodo">Período (anos):</label>
+                                <input type="number" id="comp-periodo" value="10" min="1" max="30">
+                            </div>
+                            <button onclick="gerarComparativo()" class="btn-primary">Comparar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-results">
+                    <div class="comparison-table">
+                        <h3>Resultados da Comparação</h3>
+                        <table id="tabela-comparacao">
+                            <thead>
+                                <tr>
+                                    <th>Investimento</th>
+                                    <th>Taxa Mensal</th>
+                                    <th>Valor Investido</th>
+                                    <th>Valor Final</th>
+                                    <th>Rendimento</th>
+                                    <th>Rentabilidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dados serão inseridos aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="comparison-charts">
+                        <div class="chart-container">
+                            <canvas id="grafico-comparativo"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="grafico-evolucao-comparativo"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="educational-section">
+            <div class="container">
+                <h2>Métricas Importantes</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>🎯 ROI (Return on Investment)</h3>
+                        <p>Mede o retorno do investimento em relação ao valor investido.</p>
+                        <div class="formula">
+                            <strong>Fórmula:</strong> (Valor Final - Valor Investido) / Valor Investido × 100
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3>📊 Volatilidade</h3>
+                        <p>Mede o grau de variação dos retornos de um investimento.</p>
+                        <div class="explanation">
+                            <strong>Interpretação:</strong> Maior volatilidade = Maior risco e potencial de retorno
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3>⚖️ Relação Risco x Retorno</h3>
+                        <p>Princípio fundamental: maior retorno geralmente significa maior risco.</p>
+                        <div class="risk-scale">
+                            <div class="risk-item low">Poupança: Baixo Risco</div>
+                            <div class="risk-item medium">CDB/Tesouro: Risco Médio</div>
+                            <div class="risk-item high">Ações: Alto Risco</div>
+                        </div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3>💰 Juros Compostos</h3>
+                        <p>O segredo do crescimento exponencial dos investimentos.</p>
+                        <div class="compound-example">
+                            <strong>Exemplo:</strong> R$ 1.000 a 10% a.a. por 10 anos = R$ 2.594
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="simulator-section">
+            <div class="container">
+                <h2>Simulação de Cenários</h2>
+                
+                <div class="scenario-simulator">
+                    <div class="scenario-controls">
+                        <h3>Simule Diferentes Cenários</h3>
+                        <div class="scenario-inputs">
+                            <div class="scenario-group">
+                                <h4>Cenário Conservador</h4>
+                                <button onclick="simularCenario('conservador')" class="btn-secondary">Simular</button>
+                                <div id="resultado-conservador" class="scenario-result"></div>
+                            </div>
+                            
+                            <div class="scenario-group">
+                                <h4>Cenário Moderado</h4>
+                                <button onclick="simularCenario('moderado')" class="btn-secondary">Simular</button>
+                                <div id="resultado-moderado" class="scenario-result"></div>
+                            </div>
+                            
+                            <div class="scenario-group">
+                                <h4>Cenário Arrojado</h4>
+                                <button onclick="simularCenario('arrojado')" class="btn-secondary">Simular</button>
+                                <div id="resultado-arrojado" class="scenario-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Simulador de Investimentos. Desenvolvido para fins educativos.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/simulator.js"></script>
+    <script src="../js/charts.js"></script>
+    <script>
+        function gerarComparativo() {
+            const valor = parseFloat(document.getElementById('comp-valor').value);
+            const aporte = parseFloat(document.getElementById('comp-aporte').value);
+            const periodo = parseInt(document.getElementById('comp-periodo').value);
+            
+            const tipos = ['poupanca', 'cdb', 'lci', 'tesouro-selic', 'tesouro-ipca', 'acoes', 'fiis'];
+            const nomes = {
+                'poupanca': 'Poupança',
+                'cdb': 'CDB',
+                'lci': 'LCI/LCA',
+                'tesouro-selic': 'Tesouro Selic',
+                'tesouro-ipca': 'Tesouro IPCA+',
+                'acoes': 'Ações',
+                'fiis': 'FIIs'
+            };
+            
+            const resultados = {};
+            const tbody = document.querySelector('#tabela-comparacao tbody');
+            tbody.innerHTML = '';
+            
+            tipos.forEach(tipo => {
+                const resultado = simularInvestimento(tipo, valor, aporte, periodo);
+                resultados[tipo] = resultado;
+                
+                const row = tbody.insertRow();
+                const rentabilidade = ((resultado.valorFinal / resultado.valorInvestido - 1) * 100);
+                
+                row.innerHTML = `
+                    <td><strong>${nomes[tipo]}</strong></td>
+                    <td>${(taxasInvestimento[tipo] * 100).toFixed(2)}%</td>
+                    <td>${formatarMoeda(resultado.valorInvestido)}</td>
+                    <td>${formatarMoeda(resultado.valorFinal)}</td>
+                    <td>${formatarMoeda(resultado.valorFinal - resultado.valorInvestido)}</td>
+                    <td>${rentabilidade.toFixed(2)}%</td>
+                `;
+            });
+            
+            criarGraficosComparativos(resultados, nomes);
+        }
+        
+        function criarGraficosComparativos(resultados, nomes) {
+            // Gráfico de barras comparativo
+            const ctx1 = document.getElementById('grafico-comparativo').getContext('2d');
+            const tipos = Object.keys(resultados);
+            const valores = tipos.map(tipo => resultados[tipo].valorFinal);
+            
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: tipos.map(tipo => nomes[tipo]),
+                    datasets: [{
+                        label: 'Valor Final (R$)',
+                        data: valores,
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                            '#9966FF', '#FF9F40', '#FF6384'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Comparação de Valores Finais'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatarMoeda(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Gráfico de linha de evolução
+            const ctx2 = document.getElementById('grafico-evolucao-comparativo').getContext('2d');
+            const datasets = tipos.map((tipo, index) => {
+                const cores = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#FF6384'];
+                return {
+                    label: nomes[tipo],
+                    data: resultados[tipo].evolucao.map(ponto => ponto.valorTotal),
+                    borderColor: cores[index],
+                    backgroundColor: cores[index] + '20',
+                    fill: false,
+                    tension: 0.1
+                };
+            });
+            
+            new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: resultados[tipos[0]].evolucao.map((_, index) => `Mês ${index}`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolução dos Investimentos ao Longo do Tempo'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatarMoeda(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function simularCenario(tipo) {
+            const cenarios = {
+                'conservador': { valor: 10000, aporte: 500, tipo: 'cdb' },
+                'moderado': { valor: 15000, aporte: 750, tipo: 'tesouro-ipca' },
+                'arrojado': { valor: 20000, aporte: 1000, tipo: 'acoes' }
+            };
+            
+            const config = cenarios[tipo];
+            const resultado = simularInvestimento(config.tipo, config.valor, config.aporte, 10);
+            
+            document.getElementById(`resultado-${tipo}`).innerHTML = `
+                <p><strong>Valor Final:</strong> ${formatarMoeda(resultado.valorFinal)}</p>
+                <p><strong>Rendimento:</strong> ${formatarMoeda(resultado.valorFinal - resultado.valorInvestido)}</p>
+            `;
+        }
+        
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        }
+        
+        // Gerar comparativo inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            gerarComparativo();
+        });
+    </script>
+</body>
+</html>
+            <div id="charts-container">
+                <!-- Charts will be rendered here -->
+            </div>
+        </section>
+        <section id="simulator">
+            <h2>Investment Simulator</h2>
+            <div id="simulator-container">
+                <!-- Investment simulator interface will be here -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Investment Simulator. All rights reserved.</p>
+    </footer>
+    <script src="../js/main.js"></script>
+    <script src="../js/simulator.js"></script>
+    <script src="../js/charts.js"></script>
+</body>
+</html>

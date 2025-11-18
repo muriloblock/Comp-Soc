@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio - Simulador de Investimentos</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/simulator.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>💰 Simulador de Investimentos</h1>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Simulador</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="learn.html">Aprender</a></li>
+                    <li><a href="portfolio.html">Portfólio</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2>Seu Portfólio de Investimentos</h2>
+                <p>Construa e gerencie um portfólio diversificado</p>
+            </div>
+        </section>
+
+        <section class="simulator-section">
+            <div class="container">
+                <h2>Construtor de Portfólio</h2>
+                
+                <div class="portfolio-builder">
+                    <div class="builder-form">
+                        <h3>Criar Novo Portfólio</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="portfolio-valor">Valor Total (R$):</label>
+                                <input type="number" id="portfolio-valor" value="50000" min="1000" step="1000">
+                            </div>
+                            <div class="form-group">
+                                <label for="portfolio-perfil">Perfil de Risco:</label>
+                                <select id="portfolio-perfil">
+                                    <option value="conservador">Conservador</option>
+                                    <option value="moderado">Moderado</option>
+                                    <option value="arrojado">Arrojado</option>
+                                </select>
+                            </div>
+                            <button onclick="criarPortfolio()" class="btn-primary">Criar Portfólio</button>
+                        </div>
+                    </div>
+                    
+                    <div class="portfolio-allocation">
+                        <h3>Alocação Sugerida</h3>
+                        <div id="alocacao-sugerida" class="allocation-display">
+                            <!-- Alocação será exibida aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="portfolio-results">
+                    <div class="portfolio-summary">
+                        <h3>Resumo do Portfólio</h3>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <h4>Valor Investido</h4>
+                                <p id="portfolio-investido">R$ 0,00</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Valor Projetado (10 anos)</h4>
+                                <p id="portfolio-projetado">R$ 0,00</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Rendimento Esperado</h4>
+                                <p id="portfolio-rendimento">R$ 0,00</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Rentabilidade Média</h4>
+                                <p id="portfolio-rentabilidade">0%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portfolio-charts">
+                        <div class="chart-container">
+                            <canvas id="grafico-alocacao"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="grafico-evolucao-portfolio"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="educational-section">
+            <div class="container">
+                <h2>Estratégias de Portfólio</h2>
+                
+                <div class="strategy-cards">
+                    <div class="strategy-card">
+                        <h3>🛡️ Portfólio Conservador</h3>
+                        <div class="strategy-allocation">
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Fixa</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 80%"></span>
+                                </span>
+                                <span class="allocation-percent">80%</span>
+                            </div>
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Variável</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 20%"></span>
+                                </span>
+                                <span class="allocation-percent">20%</span>
+                            </div>
+                        </div>
+                        <p><strong>Objetivo:</strong> Preservação de capital com baixo risco</p>
+                        <p><strong>Rentabilidade esperada:</strong> 8-12% ao ano</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h3>⚖️ Portfólio Moderado</h3>
+                        <div class="strategy-allocation">
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Fixa</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 50%"></span>
+                                </span>
+                                <span class="allocation-percent">50%</span>
+                            </div>
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Variável</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 50%"></span>
+                                </span>
+                                <span class="allocation-percent">50%</span>
+                            </div>
+                        </div>
+                        <p><strong>Objetivo:</strong> Equilibrio entre segurança e crescimento</p>
+                        <p><strong>Rentabilidade esperada:</strong> 12-16% ao ano</p>
+                    </div>
+
+                    <div class="strategy-card">
+                        <h3>🚀 Portfólio Arrojado</h3>
+                        <div class="strategy-allocation">
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Fixa</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 20%"></span>
+                                </span>
+                                <span class="allocation-percent">20%</span>
+                            </div>
+                            <div class="allocation-item">
+                                <span class="allocation-label">Renda Variável</span>
+                                <span class="allocation-bar">
+                                    <span class="allocation-fill" style="width: 80%"></span>
+                                </span>
+                                <span class="allocation-percent">80%</span>
+                            </div>
+                        </div>
+                        <p><strong>Objetivo:</strong> Máximo crescimento com maior risco</p>
+                        <p><strong>Rentabilidade esperada:</strong> 16-20% ao ano</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="simulator-section">
+            <div class="container">
+                <h2>Rebalanceamento de Portfólio</h2>
+                
+                <div class="rebalancing-info">
+                    <div class="info-card">
+                        <h3>Por que Rebalancear?</h3>
+                        <ul>
+                            <li>Manter a alocação desejada</li>
+                            <li>Realizar lucros automaticamente</li>
+                            <li>Reduzir volatilidade</li>
+                            <li>Manter disciplina de investimento</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Quando Rebalancear?</h3>
+                        <ul>
+                            <li>Trimestralmente ou semestralmente</li>
+                            <li>When uma classe de ativo desvia >5%</li>
+                            <li>Em momentos de alta volatilidade</li>
+                            <li>Mudanças no perfil de risco</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Como Rebalancear?</h3>
+                        <ul>
+                            <li>Venda ativos com peso acima do alvo</li>
+                            <li>Compre ativos com peso abaixo do alvo</li>
+                            <li>Use novos aportes para rebalancear</li>
+                            <li>Considere custos de transação</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Simulador de Investimentos. Desenvolvido para fins educativos.</p>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/simulator.js"></script>
+    <script src="../js/charts.js"></script>
+    <script>
+        const alocacoesPorPerfil = {
+            'conservador': {
+                'cdb': 0.4,
+                'tesouro-selic': 0.25,
+                'lci': 0.15,
+                'acoes': 0.15,
+                'fiis': 0.05
+            },
+            'moderado': {
+                'cdb': 0.25,
+                'tesouro-ipca': 0.25,
+                'acoes': 0.35,
+                'fiis': 0.15
+            },
+            'arrojado': {
+                'tesouro-selic': 0.1,
+                'tesouro-ipca': 0.1,
+                'acoes': 0.60,
+                'fiis': 0.20
+            }
+        };
+        
+        const nomesInvestimentos = {
+            'poupanca': 'Poupança',
+            'cdb': 'CDB',
+            'lci': 'LCI/LCA',
+            'tesouro-selic': 'Tesouro Selic',
+            'tesouro-ipca': 'Tesouro IPCA+',
+            'acoes': 'Ações',
+            'fiis': 'FIIs'
+        };
+        
+        function criarPortfolio() {
+            const valor = parseFloat(document.getElementById('portfolio-valor').value);
+            const perfil = document.getElementById('portfolio-perfil').value;
+            
+            const alocacao = alocacoesPorPerfil[perfil];
+            const alocacaoDisplay = document.getElementById('alocacao-sugerida');
+            
+            let html = '<div class="allocation-list">';
+            let valorTotal = 0;
+            let rendimentoTotal = 0;
+            let taxaMediaPonderada = 0;
+            
+            Object.entries(alocacao).forEach(([tipo, percentual]) => {
+                const valorAlocado = valor * percentual;
+                const resultado = simularInvestimento(tipo, valorAlocado, 0, 10);
+                const rendimento = resultado.valorFinal - resultado.valorInvestido;
+                
+                valorTotal += resultado.valorFinal;
+                rendimentoTotal += rendimento;
+                taxaMediaPonderada += taxasInvestimento[tipo] * percentual;
+                
+                html += `
+                    <div class="allocation-row">
+                        <span class="investment-name">${nomesInvestimentos[tipo]}</span>
+                        <span class="investment-percent">${(percentual * 100).toFixed(1)}%</span>
+                        <span class="investment-value">${formatarMoeda(valorAlocado)}</span>
+                        <span class="investment-future">${formatarMoeda(resultado.valorFinal)}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            alocacaoDisplay.innerHTML = html;
+            
+            // Atualizar resumo
+            document.getElementById('portfolio-investido').textContent = formatarMoeda(valor);
+            document.getElementById('portfolio-projetado').textContent = formatarMoeda(valorTotal);
+            document.getElementById('portfolio-rendimento').textContent = formatarMoeda(rendimentoTotal);
+            document.getElementById('portfolio-rentabilidade').textContent = 
+                ((taxaMediaPonderada * 12) * 100).toFixed(2) + '% a.a.';
+            
+            // Criar gráficos
+            criarGraficoAlocacao(alocacao, valor);
+            criarGraficoEvolucaoPortfolio(alocacao, valor);
+        }
+        
+        function criarGraficoAlocacao(alocacao, valor) {
+            const ctx = document.getElementById('grafico-alocacao').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(alocacao).map(tipo => nomesInvestimentos[tipo]),
+                    datasets: [{
+                        data: Object.values(alocacao).map(p => p * valor),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Alocação do Portfólio'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const percentage = ((context.parsed / valor) * 100).toFixed(1);
+                                    return `${context.label}: ${formatarMoeda(context.parsed)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function criarGraficoEvolucaoPortfolio(alocacao, valor) {
+            const ctx = document.getElementById('grafico-evolucao-portfolio').getContext('2d');
+            
+            const meses = Array.from({length: 121}, (_, i) => i); // 10 anos
+            const evolucaoTotal = meses.map(mes => {
+                let valorMes = 0;
+                Object.entries(alocacao).forEach(([tipo, percentual]) => {
+                    const valorInicial = valor * percentual;
+                    const valorMensal = valorInicial * Math.pow(1 + taxasInvestimento[tipo], mes);
+                    valorMes += valorMensal;
+                });
+                return valorMes;
+            });
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: meses.map(m => `${Math.floor(m/12)}a ${m%12}m`),
+                    datasets: [{
+                        label: 'Valor do Portfólio',
+                        data: evolucaoTotal,
+                        borderColor: '#36A2EB',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolução do Portfólio (10 anos)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return formatarMoeda(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        }
+        
+        // Criar portfólio inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            criarPortfolio();
+        });
+    </script>
+</body>
+</html>
+            <h2>Your Investments</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Amount Invested</th>
+                        <th>Current Value</th>
+                        <th>Profit/Loss</th>
+                    </tr>
+                </thead>
+                <tbody id="investment-table-body">
+                    <!-- Investment rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Investment Simulator. All rights reserved.</p>
+    </footer>
+    <script src="../js/main.js"></script>
+    <script src="../js/simulator.js"></script>
+</body>
+</html>
