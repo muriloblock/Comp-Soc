@@ -189,3 +189,11 @@ function calcularCenarios(valorInicial, aporteMensal, anos) {
 function aplicarInflacao(valor, taxaInflacao, anos) {
     return valor / Math.pow((1 + taxaInflacao), anos);
 }
+
+// Função auxiliar para formatar valores monetários
+function formatarMoeda(valor) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(valor);
+}

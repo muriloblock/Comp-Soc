@@ -52,7 +52,37 @@
                                     <option value="arrojado">Arrojado</option>
                                 </select>
                             </div>
-                            <button onclick="criarPortfolio()" class="btn-primary">Criar Portfólio</button>
+                            <div class="form-group">
+                                <label for="portfolio-horizonte">Horizonte (anos):</label>
+                                <select id="portfolio-horizonte">
+                                    <option value="1">1</option>
+                                    <option value="3">3</option>
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin-top:10px; gap:15px; align-items:center;">
+                            <div style="display:flex; gap:10px;">
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.85em;">
+                                    <input type="radio" name="modo-alocacao" value="perfil" checked> Usar perfil
+                                </label>
+                                <label style="display:flex; align-items:center; gap:5px; font-size:0.85em;">
+                                    <input type="radio" name="modo-alocacao" value="custom"> Personalizado
+                                </label>
+                            </div>
+                            <button id="btn-criar-portfolio" class="btn-primary">Criar Portfólio</button>
+                        </div>
+                        <div id="custom-allocation" style="display:none; margin-top:15px;">
+                            <h4 style="margin-bottom:8px;">Alocação Personalizada (%)</h4>
+                            <div id="allocation-rows" style="display:flex; flex-direction:column; gap:6px;"></div>
+                            <div style="display:flex; gap:10px; margin-top:8px; align-items:center;">
+                                <button type="button" id="btn-add-ativo" style="padding:6px 12px;" class="btn-secondary">+ Ativo</button>
+                                <span id="percent-total" style="font-size:0.8em; color:#555;">Total: 0%</span>
+                                <span id="percent-warning" style="font-size:0.8em; color:#d32f2f; display:none;">A soma deve ser 100%</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -73,7 +103,7 @@
                                 <p id="portfolio-investido">R$ 0,00</p>
                             </div>
                             <div class="summary-card">
-                                <h4>Valor Projetado (10 anos)</h4>
+                                <h4 id="label-projetado">Valor Projetado</h4>
                                 <p id="portfolio-projetado">R$ 0,00</p>
                             </div>
                             <div class="summary-card">
@@ -221,10 +251,11 @@
     <!-- Carregar API antes dos outros scripts -->
     <script src="../js/api.js"></script>
     <script src="../js/simulator.js"></script>
-    <script src="../js/main.js"></script>
     <script src="../js/charts.js"></script>
     <script>
-        // Variáveis globais para armazenar instâncias dos gráficos
+        // Isolar lógica da página para evitar re-declaração (erro de variável já declarada)
+        (function(){
+        // Instâncias dos gráficos (escopo local)
         let graficoAlocacao = null;
         let graficoEvolucao = null;
         
@@ -263,8 +294,17 @@
         function criarPortfolio() {
             const valor = parseFloat(document.getElementById('portfolio-valor').value);
             const perfil = document.getElementById('portfolio-perfil').value;
-            
-            const alocacao = alocacoesPorPerfil[perfil];
+            const horizonte = parseInt(document.getElementById('portfolio-horizonte').value) || 10;
+            const modo = document.querySelector('input[name="modo-alocacao"]:checked').value;
+
+            // Obter alocação conforme modo
+            let alocacao;
+            if (modo === 'custom') {
+                alocacao = obterAlocacaoPersonalizada();
+            } else {
+                alocacao = alocacoesPorPerfil[perfil];
+            }
+
             const alocacaoDisplay = document.getElementById('alocacao-sugerida');
             
             let html = '<div class="allocation-list">';
@@ -274,7 +314,7 @@
             
             Object.entries(alocacao).forEach(([tipo, percentual]) => {
                 const valorAlocado = valor * percentual;
-                const resultado = simularInvestimento(tipo, valorAlocado, 0, 10);
+                const resultado = simularInvestimento(tipo, valorAlocado, 0, horizonte);
                 const rendimento = resultado.valorFinal - resultado.valorInvestido;
                 
                 valorTotal += resultado.valorFinal;
@@ -300,10 +340,11 @@
             document.getElementById('portfolio-rendimento').textContent = formatarMoeda(rendimentoTotal);
             document.getElementById('portfolio-rentabilidade').textContent = 
                 ((taxaMediaPonderada * 12) * 100).toFixed(2) + '% a.a.';
+            document.getElementById('label-projetado').textContent = `Valor Projetado (${horizonte} anos)`;
             
             // Criar gráficos
             criarGraficoAlocacao(alocacao, valor);
-            criarGraficoEvolucaoPortfolio(alocacao, valor);
+            criarGraficoEvolucaoPortfolio(alocacao, valor, horizonte);
         }
         
         function criarGraficoAlocacao(alocacao, valor) {
@@ -345,7 +386,7 @@
             });
         }
         
-        function criarGraficoEvolucaoPortfolio(alocacao, valor) {
+        function criarGraficoEvolucaoPortfolio(alocacao, valor, horizonteAnos = 10) {
             // Destruir gráfico anterior se existir
             if (graficoEvolucao) {
                 graficoEvolucao.destroy();
@@ -353,7 +394,8 @@
             
             const ctx = document.getElementById('grafico-evolucao-portfolio').getContext('2d');
             
-            const meses = Array.from({length: 121}, (_, i) => i); // 10 anos
+            const totalMeses = horizonteAnos * 12;
+            const meses = Array.from({length: totalMeses + 1}, (_, i) => i);
             const evolucaoTotal = meses.map(mes => {
                 let valorMes = 0;
                 Object.entries(alocacao).forEach(([tipo, percentual]) => {
@@ -382,7 +424,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Evolução do Portfólio (10 anos)'
+                            text: `Evolução do Portfólio (${horizonteAnos} anos)`
                         }
                     },
                     scales: {
@@ -397,19 +439,106 @@
                 }
             });
         }
-        
-        function formatarMoeda(valor) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(valor);
+
+        // ================= Alocação Personalizada =================
+        const investimentosDisponiveis = Object.keys(nomesInvestimentos).filter(k => k !== 'poupanca');
+        function adicionarLinhaAlocacao(tipoDefault = 'cdb', percentDefault = 0) {
+            const container = document.getElementById('allocation-rows');
+            const row = document.createElement('div');
+            row.className = 'allocation-custom-row';
+            row.style.cssText = 'display:flex; gap:8px; align-items:center;';
+            row.innerHTML = `
+                <select class="select-ativo" style="flex:1; padding:6px;">
+                    ${investimentosDisponiveis.map(t => `<option value="${t}" ${t===tipoDefault?'selected':''}>${nomesInvestimentos[t]}</option>`).join('')}
+                </select>
+                <input type="number" min="0" max="100" step="0.5" value="${percentDefault}" class="percent-ativo" style="width:90px; padding:6px;" placeholder="%">
+                <button type="button" class="btn-remove" style="padding:4px 8px;">✖</button>
+            `;
+            container.appendChild(row);
+            row.querySelector('.percent-ativo').addEventListener('input', atualizarPercentuaisTotais);
+            row.querySelector('.select-ativo').addEventListener('change', atualizarPercentuaisTotais);
+            row.querySelector('.btn-remove').addEventListener('click', () => { row.remove(); atualizarPercentuaisTotais(); });
+            atualizarPercentuaisTotais();
+        }
+
+        function atualizarPercentuaisTotais() {
+            const percInputs = Array.from(document.querySelectorAll('#allocation-rows .percent-ativo'));
+            const total = percInputs.reduce((s, el) => s + (parseFloat(el.value)||0), 0);
+            const totalSpan = document.getElementById('percent-total');
+            const warn = document.getElementById('percent-warning');
+            totalSpan.textContent = `Total: ${total.toFixed(1)}%`;
+            if (Math.abs(total - 100) < 0.001) { warn.style.display='none'; } else { warn.style.display='inline'; }
+        }
+
+        function obterAlocacaoPersonalizada() {
+            const rows = Array.from(document.querySelectorAll('#allocation-rows .allocation-custom-row'));
+            const aloc = {};
+            let soma = 0;
+            rows.forEach(r => {
+                const tipo = r.querySelector('.select-ativo').value;
+                const percent = parseFloat(r.querySelector('.percent-ativo').value)||0;
+                if (percent > 0) {
+                    aloc[tipo] = percent/100;
+                    soma += percent;
+                }
+            });
+            // Normalizar se soma != 100 (evita erro visual, mas alerta já aparece)
+            if (soma > 0 && Math.abs(soma - 100) > 0.001) {
+                Object.keys(aloc).forEach(k => { aloc[k] = aloc[k] / (soma/100); });
+            }
+            return aloc;
+        }
+
+        function prepararAlocacaoInicialCustom() {
+            // Limpar e adicionar 3 linhas padrão
+            document.getElementById('allocation-rows').innerHTML='';
+            adicionarLinhaAlocacao('cdb', 40);
+            adicionarLinhaAlocacao('acoes', 40);
+            adicionarLinhaAlocacao('fiis', 20);
         }
         
-        // Carregar taxas e criar portfólio inicial
+        // Expor funções necessárias ao console (debug opcional)
+        window.criarPortfolio = criarPortfolio;
+
+        // Inicialização após DOM pronto
         document.addEventListener('DOMContentLoaded', async () => {
-            await atualizarTaxasReais();
+            // Carregar taxas (se função existir)
+            if (typeof atualizarTaxasReais === 'function') {
+                try { await atualizarTaxasReais(); } catch(e) { console.warn('Falha ao atualizar taxas', e); }
+            }
+            // Criar primeiro portfólio
             criarPortfolio();
+            // Vincular evento de clique robusto ao botão
+            const btn = document.getElementById('btn-criar-portfolio');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    criarPortfolio();
+                });
+            }
+            // Toggle modo alocação
+            document.querySelectorAll('input[name="modo-alocacao"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    const customDiv = document.getElementById('custom-allocation');
+                    if (r.value === 'custom' && r.checked) {
+                        customDiv.style.display='block';
+                        prepararAlocacaoInicialCustom();
+                    } else if (r.value === 'perfil' && r.checked) {
+                        customDiv.style.display='none';
+                    }
+                    criarPortfolio();
+                });
+            });
+            // Botão adicionar ativo
+            const btnAdd = document.getElementById('btn-add-ativo');
+            if (btnAdd) {
+                btnAdd.addEventListener('click', () => adicionarLinhaAlocacao());
+            }
+            // Recalcular ao mudar perfil ou horizonte
+            document.getElementById('portfolio-perfil').addEventListener('change', criarPortfolio);
+            document.getElementById('portfolio-horizonte').addEventListener('change', criarPortfolio);
         });
+        })();
     </script>
 </body>
 </html>
