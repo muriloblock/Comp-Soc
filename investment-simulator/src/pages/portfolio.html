@@ -37,7 +37,7 @@
                 <h2>Construtor de Portfólio</h2>
                 
                 <div class="portfolio-builder">
-                    <div class="builder-form">
+                    <div class="builder-left builder-form">
                         <h3>Criar Novo Portfólio</h3>
                         <div class="form-row">
                             <div class="form-group">
@@ -52,19 +52,8 @@
                                     <option value="arrojado">Arrojado</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="portfolio-horizonte">Horizonte (anos):</label>
-                                <select id="portfolio-horizonte">
-                                    <option value="1">1</option>
-                                    <option value="3">3</option>
-                                    <option value="5" selected>5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                </select>
-                            </div>
                         </div>
-                        <div class="form-row" style="margin-top:10px; gap:15px; align-items:center;">
+                        <div class="form-row form-mode-row" style="margin-top:10px; gap:15px; align-items:center;">
                             <div style="display:flex; gap:10px;">
                                 <label style="display:flex; align-items:center; gap:5px; font-size:0.85em;">
                                     <input type="radio" name="modo-alocacao" value="perfil" checked> Usar perfil
@@ -73,23 +62,26 @@
                                     <input type="radio" name="modo-alocacao" value="custom"> Personalizado
                                 </label>
                             </div>
-                            <button id="btn-criar-portfolio" class="btn-primary">Criar Portfólio</button>
                         </div>
-                        <div id="custom-allocation" style="display:none; margin-top:15px;">
-                            <h4 style="margin-bottom:8px;">Alocação Personalizada (%)</h4>
-                            <div id="allocation-rows" style="display:flex; flex-direction:column; gap:6px;"></div>
-                            <div style="display:flex; gap:10px; margin-top:8px; align-items:center;">
-                                <button type="button" id="btn-add-ativo" style="padding:6px 12px;" class="btn-secondary">+ Ativo</button>
-                                <span id="percent-total" style="font-size:0.8em; color:#555;">Total: 0%</span>
-                                <span id="percent-warning" style="font-size:0.8em; color:#d32f2f; display:none;">A soma deve ser 100%</span>
+                        <div id="custom-allocation" class="custom-allocation" style="display:none;">
+                            <h4 class="section-subtitle">Alocação Personalizada (%)</h4>
+                            <div id="allocation-rows" class="allocation-rows"></div>
+                            <div class="allocation-actions">
+                                <button type="button" id="btn-add-ativo" class="btn-secondary btn-small">+ Ativo</button>
+                                <span id="percent-total" class="percent-total">Total: 0%</span>
+                                <span id="percent-warning" class="percent-warning" style="display:none;">A soma deve ser 100%</span>
+                            </div>
+                        </div>
+                        <div class="portfolio-allocation">
+                            <h3>Alocação</h3>
+                            <div id="alocacao-sugerida" class="allocation-display">
+                                <!-- Alocação será exibida aqui -->
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="portfolio-allocation">
-                        <h3>Alocação Sugerida</h3>
-                        <div id="alocacao-sugerida" class="allocation-display">
-                            <!-- Alocação será exibida aqui -->
+                    <div class="builder-right">
+                        <div class="allocation-chart">
+                            <canvas id="grafico-alocacao"></canvas>
                         </div>
                     </div>
                 </div>
@@ -119,9 +111,25 @@
 
                     <div class="portfolio-charts">
                         <div class="chart-container">
-                            <canvas id="grafico-alocacao"></canvas>
-                        </div>
-                        <div class="chart-container">
+                            <div class="chart-top-controls">
+                                <label>Horizonte
+                                    <select id="chart-horizonte">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5" selected>5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="12">12</option>
+                                        <option value="15">15</option>
+                                        <option value="20">20</option>
+                                    </select>
+                                </label>
+                            </div>
                             <canvas id="grafico-evolucao-portfolio"></canvas>
                         </div>
                     </div>
@@ -294,7 +302,7 @@
         function criarPortfolio() {
             const valor = parseFloat(document.getElementById('portfolio-valor').value);
             const perfil = document.getElementById('portfolio-perfil').value;
-            const horizonte = parseInt(document.getElementById('portfolio-horizonte').value) || 10;
+            const horizonte = parseInt(document.getElementById('chart-horizonte').value) || 5;
             const modo = document.querySelector('input[name="modo-alocacao"]:checked').value;
 
             // Obter alocação conforme modo
@@ -468,6 +476,8 @@
             const warn = document.getElementById('percent-warning');
             totalSpan.textContent = `Total: ${total.toFixed(1)}%`;
             if (Math.abs(total - 100) < 0.001) { warn.style.display='none'; } else { warn.style.display='inline'; }
+            // Atualiza portfólio em tempo real
+            criarPortfolio();
         }
 
         function obterAlocacaoPersonalizada() {
@@ -508,14 +518,6 @@
             }
             // Criar primeiro portfólio
             criarPortfolio();
-            // Vincular evento de clique robusto ao botão
-            const btn = document.getElementById('btn-criar-portfolio');
-            if (btn) {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    criarPortfolio();
-                });
-            }
             // Toggle modo alocação
             document.querySelectorAll('input[name="modo-alocacao"]').forEach(r => {
                 r.addEventListener('change', () => {
@@ -536,7 +538,8 @@
             }
             // Recalcular ao mudar perfil ou horizonte
             document.getElementById('portfolio-perfil').addEventListener('change', criarPortfolio);
-            document.getElementById('portfolio-horizonte').addEventListener('change', criarPortfolio);
+            document.getElementById('portfolio-valor').addEventListener('input', criarPortfolio);
+            document.getElementById('chart-horizonte').addEventListener('change', criarPortfolio);
         });
         })();
     </script>
